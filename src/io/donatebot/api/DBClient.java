@@ -30,7 +30,9 @@ public class DBClient {
 		
 		DBClient donatebotClient = new DBClient("", "myAPIKey");
 		
-		CompletableFuture<Donation[]> donations = donatebotClient.getNewDonations();
+		String[] statuses = {"Completed", "Reversed", "Refunded"};
+		
+		CompletableFuture<Donation[]> donations = donatebotClient.getNewDonations(statuses);
 		
 		Donation[] myDonations = donations.get();
 		
@@ -41,7 +43,6 @@ public class DBClient {
 			// Print the buyer's email
 			System.out.println(myFirstDonation.getBuyerEmail());
 		}
-		
 	}
 	
 	private Donation[] HandleNewDonations(final String x) {
@@ -72,11 +73,23 @@ public class DBClient {
 	
 	/**
 	 * Fetch new donations from the API
+	 * @param Statuses An array of statuses to search for
 	 * @return An array of Donation objects
 	 */
-	public CompletableFuture<Donation[]> getNewDonations() {
+	public CompletableFuture<Donation[]> getNewDonations(String[] Statuses) {
+		// Find query which is sent to the API
+		String findQuery = "";
+		
+		for (int i = 0; i < Statuses.length; i++) {
+			if (i == Statuses.length - 1) {
+				findQuery += Statuses[i];
+			} else {
+				findQuery += Statuses[i] + ",";
+			}
+		}
+		
 	    HttpRequest request = HttpRequest.newBuilder()
-	          .uri(URI.create(apiURL))
+	          .uri(URI.create(apiURL + "?find=" + findQuery))
 	          .setHeader("authorization", this.apiKey)
 	          .setHeader("user-agent", userAgent)
 	          .build();
