@@ -7,7 +7,6 @@ import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -25,8 +24,8 @@ public class DBClient {
 	
 	private final HttpClient client = HttpClient.newHttpClient();
 	
-	private final String userAgent = "Donate-Bot-Java-API/1.0.0";
-	private final String baseUrl = "https://webhook.site/404c63d5-baab-43fc-a529-d87d9906c6e2/api/v1";
+	private final String userAgent = "Donate-Bot-Java-API/1.0.0-SNAPSHOT";
+	private final String baseUrl = "https://donatebot.io/api/v1";
 	
 	/**
 	 * A new Donate Bot API Client
@@ -36,25 +35,6 @@ public class DBClient {
 	public DBClient(String serverId, String apiKey) {
 		this.serverId = serverId;
 		this.apiKey = apiKey;
-	}
-
-	public static void main(String[] args) throws InterruptedException, ExecutionException  {
-		// Example of Fetching donations
-		
-		DBClient dbClient = new DBClient("404394509917487105", "My API Key");
-		
-		//CompletableFuture<Void> cf1 = dbClient.markDonation("123", false, false);
-		
-		String[] statuses = {"Completed", "Reversed", "Refunded"};
-		
-		CompletableFuture<Donation[]> cf1 = dbClient.getNewDonations(statuses);
-		
-		Donation[] donations = cf1.get();
-		
-		String test = donations[0].getCurrency();
-		
-		System.out.println(test);
-		
 	}
 	
 	/**
@@ -133,6 +113,7 @@ public class DBClient {
 	          .uri(URI.create(baseUrl + "/donations/" + serverId + "/" + txnId + "/mark"))
 	          .setHeader("authorization", this.apiKey)
 	          .setHeader("user-agent", userAgent)
+	          .setHeader("content-type", "application/json")
 	          .POST(BodyPublishers.ofString(requestBody.toString()))
 	          .build();
 

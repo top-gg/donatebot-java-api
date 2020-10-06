@@ -111,7 +111,7 @@ public class Donation {
 		return this.currency;
 	}
 	
-	public Date getTime() {
+	public Date getDate() {
 		return this.timestamp;
 	}
 	
