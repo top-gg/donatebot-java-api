@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>io.donatebot</groupId>
 	<artifactId>api</artifactId>
-	<version>1.0.2</version>
+	<version>1.0.0</version>
 	<name>Donate Bot Java API</name>
 	<description>A client for the Donate Bot API in Java.</description>
 	<build>
