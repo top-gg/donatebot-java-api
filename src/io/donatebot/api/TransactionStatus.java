@@ -1,6 +1,6 @@
 package io.donatebot.api;
 
-public enum Status {
+public enum TransactionStatus {
 	COMPLETED,
 	REVERSED,
 	REFUNDED,
