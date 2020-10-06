@@ -2,7 +2,7 @@
 A Donate Bot API client for Java
 
 ## Installation
-Replace `VERSION` with the latest version or commit hash. The latest version can be found under [releases](https://github.com/top-gg/donatebot-java-api/releases).
+Replace `VERSION` with the latest version or commit hash. The latest version can be found under [releases](https://github.com/top-gg/donatebot-java-api/releases). You can also add the JAR from releases into your Java project.
 #### Maven
 
 ```xml
