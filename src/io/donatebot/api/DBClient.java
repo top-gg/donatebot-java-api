@@ -12,7 +12,12 @@ import java.util.concurrent.ExecutionException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-
+/**
+ * 
+ * @author Julian#7797
+ * The main Donate Bot API client class, allows you to communicate with the Donate Bot
+ * API.
+ */
 public class DBClient {
 	
 	private String apiKey = "";
@@ -23,7 +28,11 @@ public class DBClient {
 	private final String userAgent = "Donate-Bot-Java-API/1.0.0";
 	private final String baseUrl = "https://webhook.site/404c63d5-baab-43fc-a529-d87d9906c6e2/api/v1";
 	
-	
+	/**
+	 * A new Donate Bot API Client
+	 * @param serverId Your Discord Server ID
+	 * @param apiKey Your Donate Bot API Key from the panel
+	 */
 	public DBClient(String serverId, String apiKey) {
 		this.serverId = serverId;
 		this.apiKey = apiKey;
@@ -50,8 +59,8 @@ public class DBClient {
 	
 	/**
 	 * Fetch new donations from the API
-	 * @param Statuses An array of statuses to search for
-	 * @return An array of Donation objects
+	 * @param Statuses An array of strings statuses to search for
+	 * @return  An array of Donation objects
 	 */
 	public CompletableFuture<Donation[]> getNewDonations(String[] Statuses) {
 		// Find query which is sent to the API
@@ -73,10 +82,15 @@ public class DBClient {
 
 	    return client.sendAsync(request, BodyHandlers.ofString())
 	    		.thenApply(HttpResponse::body)
-	    		.thenApply(x -> HandleNewDonations(x));
+	    		.thenApply(x -> HandleDonations(x));
 	}
 	
-	private Donation[] HandleNewDonations(final String x) {
+	/**
+	 * Handle donations from the API
+	 * @param x The body string retrieved from the API
+	 * @return An array of Donation Objects
+	 */
+	private Donation[] HandleDonations(final String x) {
 		Donation[] objectArray = new Donation[0];
 		
 		try {
@@ -102,11 +116,11 @@ public class DBClient {
 	}
 	
 	/**
-	 * 
+	 * Mark a donation if you have done something with it
 	 * @param txnId The transaction ID to mark
 	 * @param isEndedSubscription If the transaction is an ended subscription
 	 * @param markProcessed If the transaction has been processed
-	 * @return CompletableFuture<Void>
+	 * @return Nothing
 	 */
 	public CompletableFuture<Void> markDonation(String txnId, Boolean isEndedSubscription, Boolean markProcessed) {
 		
@@ -142,35 +156,7 @@ public class DBClient {
 
 	    return client.sendAsync(request, BodyHandlers.ofString())
 	    		.thenApply(HttpResponse::body)
-	    		.thenApply(x -> HandleEndedSubscriptions(x));
+	    		.thenApply(x -> HandleDonations(x));
 	}
-	
-	private Donation[] HandleEndedSubscriptions(final String x) {
-		Donation[] objectArray = new Donation[0];
-		
-		try {
-			JSONObject donationsJSON = new JSONObject(x);
-			
-			JSONArray donationsArray = donationsJSON.getJSONArray("donations");
-			
-			objectArray = new Donation[donationsArray.length()];
-			
-			for (int i = 0; i < donationsArray.length(); i++)
-			{
-
-				JSONObject donation = donationsArray.getJSONObject(i);
-				objectArray[i] = new Donation().deserialize(donation);
-			}
-			
-			return objectArray;
-		} catch(Exception e) {
-			// Unhandled Exception
-		}
-		
-		return objectArray;
-	}
-	
-	
-	
 
 }

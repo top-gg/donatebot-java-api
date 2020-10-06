@@ -4,9 +4,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.text.SimpleDateFormat;
 import org.json.JSONObject;
 
+/**
+ * A class for a Donation retrieved from the API
+ * @author Julian#7797
+ *
+ */
 public class Donation {
 	private String txn_id;
 	private TransactionStatus status;
@@ -24,6 +28,11 @@ public class Donation {
 		
 	}
 	
+	/**
+	 * Returns a Donation object from a JSONObject
+	 * @param obj A JSONObject retrieved from the API
+	 * @return A Donation Object
+	 */
 	public Donation deserialize(JSONObject obj) {
 		try {
 			this.txn_id = obj.getString("txn_id");
@@ -40,14 +49,14 @@ public class Donation {
 			this.seller_customs = convertSellerCustoms(obj.optJSONObject("seller_customs"));
 			
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			// Unhandled Exception
 		}
 		return this;
 	}
 	
 	/**
 	 * Take JSON object and convert to a Map of seller custom values
-	 * @return
+	 * @return A map of the seller custom values
 	 */
 	private Map<String, String> convertSellerCustoms(JSONObject sellerCustoms) {
 		Map<String, String> map = new HashMap<String, String>();
