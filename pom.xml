@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>io.donatebot</groupId>
 	<artifactId>api</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.2</version>
 	<name>Donate Bot Java API</name>
 	<description>A client for the Donate Bot API in Java.</description>
 	<build>
@@ -12,8 +12,7 @@
 					<artifactId>maven-compiler-plugin</artifactId>
 					<version>3.8.1</version>
 					<configuration>
-			          <source>1.8</source>
-			          <target>1.8</target>
+						<release>14</release>
 					</configuration>
 			  	</plugin>
 		</plugins>
@@ -26,7 +25,4 @@
 		    <version>20200518</version>
 		</dependency>
 	</dependencies>
-
-
-
 </project>

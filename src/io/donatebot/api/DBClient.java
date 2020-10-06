@@ -24,7 +24,7 @@ public class DBClient {
 	
 	private final HttpClient client = HttpClient.newHttpClient();
 	
-	private final String userAgent = "Donate-Bot-Java-API/1.0.0";
+	private final String userAgent = "Donate-Bot-Java-API/1.0.2";
 	private final String baseUrl = "https://donatebot.io/api/v1";
 	
 	/**
