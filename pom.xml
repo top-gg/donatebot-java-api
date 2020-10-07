@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>io.donatebot</groupId>
 	<artifactId>api</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.1</version>
 	<name>Donate Bot Java API</name>
 	<description>A client for the Donate Bot API in Java.</description>
 	<build>
@@ -12,17 +12,39 @@
 					<artifactId>maven-compiler-plugin</artifactId>
 					<version>3.8.1</version>
 					<configuration>
-						<release>14</release>
+						<source>1.8</source>
+						<target>1.8</target>
 					</configuration>
 			  	</plugin>
 		</plugins>
 	</build>
+	
+	<dependencyManagement>
+	    <dependencies>
+	        <dependency>
+	            <groupId>org.asynchttpclient</groupId>
+	            <artifactId>async-http-client-bom</artifactId>
+	            <version>2.12.1</version>
+	            <type>pom</type>
+	            <scope>import</scope>
+	        </dependency>
+	    </dependencies>
+	</dependencyManagement>
   
 	<dependencies>	
 		<dependency>
 		    <groupId>org.json</groupId>
 		    <artifactId>json</artifactId>
 		    <version>20200518</version>
+		</dependency>
+	    <dependency>
+	    	<groupId>org.asynchttpclient</groupId>
+	    	<artifactId>async-http-client</artifactId>
+	    </dependency>
+		<dependency>
+		  <groupId>org.slf4j</groupId>
+		  <artifactId>slf4j-simple</artifactId>
+		  <version>1.7.21</version>
 		</dependency>
 	</dependencies>
 </project>

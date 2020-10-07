@@ -1,13 +1,10 @@
 package io.donatebot.api;
 
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpRequest.BodyPublishers;
-import java.net.http.HttpResponse;
-import java.net.http.HttpResponse.BodyHandlers;
+import static org.asynchttpclient.Dsl.*;
 import java.util.concurrent.CompletableFuture;
 
+import org.asynchttpclient.AsyncHttpClient;
+import org.asynchttpclient.Response;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -22,9 +19,9 @@ public class DBClient {
 	private String apiKey = "";
 	private String serverId = "";
 	
-	private final HttpClient client = HttpClient.newHttpClient();
+	AsyncHttpClient asyncHttpClient = asyncHttpClient();
 	
-	private final String userAgent = "Donate-Bot-Java-API/1.0.0";
+	private final String userAgent = "Donate-Bot-Java-API/1.0.1";
 	private final String baseUrl = "https://donatebot.io/api/v1";
 	
 	/**
@@ -53,16 +50,14 @@ public class DBClient {
 				findQuery += Statuses[i] + ",";
 			}
 		}
-		
-	    HttpRequest request = HttpRequest.newBuilder()
-	          .uri(URI.create(baseUrl + "/donations/" + serverId + "/new?find=" + findQuery))
-	          .setHeader("authorization", this.apiKey)
-	          .setHeader("user-agent", userAgent)
-	          .build();
-
-	    return client.sendAsync(request, BodyHandlers.ofString())
-	    		.thenApply(HttpResponse::body)
-	    		.thenApply(x -> HandleDonations(x));
+	    
+	    return asyncHttpClient
+	            .prepareGet(baseUrl + "/donations/" + serverId + "/new?find=" + findQuery)
+	            .setHeader("authorization", this.apiKey)
+	            .setHeader("user-agent", userAgent)
+	            .execute()
+	            .toCompletableFuture()
+	            .thenApply(x -> HandleDonations(x));
 	}
 	
 	/**
@@ -70,11 +65,11 @@ public class DBClient {
 	 * @param x The body string retrieved from the API
 	 * @return An array of Donation Objects
 	 */
-	private Donation[] HandleDonations(final String x) {
+	private Donation[] HandleDonations(final Response response) {
 		Donation[] objectArray = new Donation[0];
 		
 		try {
-			JSONObject donationsJSON = new JSONObject(x);
+			JSONObject donationsJSON = new JSONObject(response.getResponseBody());
 			
 			JSONArray donationsArray = donationsJSON.getJSONArray("donations");
 			
@@ -100,27 +95,23 @@ public class DBClient {
 	 * @param txnId The transaction ID to mark
 	 * @param isEndedSubscription If the transaction is an ended subscription
 	 * @param markProcessed If the transaction has been processed
-	 * @return Nothing
+	 * @return Response
 	 */
-	public CompletableFuture<Void> markDonation(String txnId, Boolean isEndedSubscription, Boolean markProcessed) {
+	public CompletableFuture<Response> markDonation(String txnId, Boolean isEndedSubscription, Boolean markProcessed) {
 		
 		JSONObject requestBody = new JSONObject();
 		
 		requestBody.put("isEndedSubscription", isEndedSubscription);
 		requestBody.put("markProcessed", markProcessed);
 		
-	    HttpRequest request = HttpRequest.newBuilder()
-	          .uri(URI.create(baseUrl + "/donations/" + serverId + "/" + txnId + "/mark"))
-	          .setHeader("authorization", this.apiKey)
-	          .setHeader("user-agent", userAgent)
-	          .setHeader("content-type", "application/json")
-	          .POST(BodyPublishers.ofString(requestBody.toString()))
-	          .build();
-
-	    return client.sendAsync(request, BodyHandlers.ofString())
-			.thenAccept((x) -> {
-				return;
-			});
+	    return asyncHttpClient
+	            .preparePost(baseUrl + "/donations/" + serverId + "/" + txnId + "/mark")
+	            .setBody(requestBody.toString())
+	            .setHeader("authorization", this.apiKey)
+	            .setHeader("user-agent", userAgent)
+	            .setHeader("content-type", "application/json")
+	            .execute()
+	            .toCompletableFuture();
 	}
 	
 	/**
@@ -129,15 +120,14 @@ public class DBClient {
 	 * @return An array of Donation objects
 	 */
 	public CompletableFuture<Donation[]> getEndedSubscriptions() {
-	    HttpRequest request = HttpRequest.newBuilder()
-	          .uri(URI.create(baseUrl + "/donations/" + serverId + "/endedsubscriptions"))
-	          .setHeader("authorization", this.apiKey)
-	          .setHeader("user-agent", userAgent)
-	          .build();
-
-	    return client.sendAsync(request, BodyHandlers.ofString())
-	    		.thenApply(HttpResponse::body)
-	    		.thenApply(x -> HandleDonations(x));
+		
+	    return asyncHttpClient
+	            .prepareGet(baseUrl + "/donations/" + serverId + "/endedsubscriptions")
+	            .setHeader("authorization", this.apiKey)
+	            .setHeader("user-agent", userAgent)
+	            .execute()
+	            .toCompletableFuture()
+	            .thenApply(x -> HandleDonations(x));
 	}
 
 }
